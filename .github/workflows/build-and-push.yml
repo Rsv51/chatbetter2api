@@ -1,13 +1,3 @@
-name: Build and Push Docker Image to GHCR
-
-on:
-  push:
-    branches: [ master ]
-  workflow_dispatch:
-
-env:
-  IMAGE_NAME: chatbetter2api
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -16,6 +6,10 @@ jobs:
       packages: write
 
     steps:
+      - name: Set lowercase repo owner
+        id: vars
+        run: echo "REPO_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -32,5 +26,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
-            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ghcr.io/${{ env.REPO_OWNER }}/${{ env.IMAGE_NAME }}:latest
+            ghcr.io/${{ env.REPO_OWNER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
